@@ -3,13 +3,18 @@ using UnityEngine;
 
 public abstract class Savable : MonoBehaviour
 {
-    [HideInInspector] public string Uid;
+    [ReadOnly] public string Uid;
 
     // Registering / Unregistering from SaveManager
 
     private void Awake()
     {
-        Uid = Guid.NewGuid().ToString();
+        if (string.IsNullOrEmpty(Uid))
+        {
+            Debug.LogError(gameObject + " this gameObject has no unique ID!");
+            return;
+        }
+
         SaveManager.savables.Add(Uid, this);
     }
 
@@ -38,5 +43,17 @@ public abstract class Savable : MonoBehaviour
 
     public virtual void Restore (string json)
     {
+    }
+
+    [ContextMenu("Generate GUID")]
+    public void GenerateGUID()
+    {
+        Uid = Guid.NewGuid().ToString();
+    }
+
+    private void Reset()
+    {
+        if(string.IsNullOrEmpty(Uid))
+            GenerateGUID();
     }
 }

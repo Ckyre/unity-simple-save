@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -10,7 +11,8 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            SaveManager.Save();
+            //SaveManager.Save();
+            SceneManager.LoadScene(1);
         }
         else if (Input.GetKeyDown(KeyCode.L))
         {

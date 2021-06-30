@@ -17,6 +17,7 @@ public class UiSavable : Savable
     public override string Capture()
     {
         byte[] imageData = image.sprite.texture.GetRawTextureData();
+        Debug.Log(imageData.Length);
 
         UiData data = new UiData()
         {
@@ -34,6 +35,7 @@ public class UiSavable : Savable
 
         text.text = data.textContent;
 
+        Debug.Log(data.imageTexture.Length);
         Texture2D tex = new Texture2D(1, 1);
         tex.LoadImage(data.imageTexture);
         tex.Apply();

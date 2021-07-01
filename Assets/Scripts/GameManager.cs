@@ -1,22 +1,31 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using GabrielRouleau.SaveManagement;
 
 public class GameManager : MonoBehaviour
 {
     public Text text;
     public Image image;
 
+    public Sprite hdImage;
+
+    private void Start()
+    {
+        SaveManager.AllSaveFilesFromCommonDir();
+        SaveManager.UseSaveFile(0);
+    }
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            //SaveManager.Save();
             SceneManager.LoadScene(1);
         }
-        else if (Input.GetKeyDown(KeyCode.L))
+
+        if (Input.GetKeyDown(KeyCode.K))
         {
-            SaveManager.Load();
+            image.sprite = hdImage;
         }
     }
 

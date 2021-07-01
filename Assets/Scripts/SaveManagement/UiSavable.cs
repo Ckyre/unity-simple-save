@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Newtonsoft.Json;
+using GabrielRouleau.SaveManagement;
 
 public class UiSavable : Savable
 {
@@ -9,6 +10,7 @@ public class UiSavable : Savable
     {
         public string textContent;
         public byte[] imageTexture;
+        public int textureFormat;
     }
 
     public Text text;
@@ -16,13 +18,11 @@ public class UiSavable : Savable
 
     public override string Capture()
     {
-        byte[] imageData = image.sprite.texture.GetRawTextureData();
-        Debug.Log(imageData.Length);
-
         UiData data = new UiData()
         {
             textContent = text.text,
-            imageTexture = imageData
+            imageTexture = image.sprite.texture.GetRawTextureData(),
+            textureFormat = (int)image.sprite.texture.format
         };
 
         string json = JsonConvert.SerializeObject(data);
@@ -35,10 +35,9 @@ public class UiSavable : Savable
 
         text.text = data.textContent;
 
-        Debug.Log(data.imageTexture.Length);
-        Texture2D tex = new Texture2D(1, 1);
-        tex.LoadImage(data.imageTexture);
+        Texture2D tex = new Texture2D(300, 168, (TextureFormat)data.textureFormat, false);
+        tex.LoadRawTextureData(data.imageTexture);
         tex.Apply();
-        image.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0, 0));
+        image.sprite = Sprite.Create(tex, new Rect(0f, 0f, tex.width, tex.height), new Vector2(0.5f, 0.5f));
     }
 }

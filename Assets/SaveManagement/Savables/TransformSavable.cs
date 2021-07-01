@@ -1,5 +1,6 @@
 using UnityEngine;
 using Newtonsoft.Json;
+using GabrielRouleau.SaveManagement;
 
 public class TransformSavable : Savable
 {

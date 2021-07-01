@@ -1,59 +1,71 @@
 using System;
 using UnityEngine;
 
-public abstract class Savable : MonoBehaviour
+namespace GabrielRouleau.SaveManagement
 {
-    [ReadOnly] public string Uid;
-
-    // Registering / Unregistering from SaveManager
-
-    private void Awake()
+    public abstract class Savable : MonoBehaviour
     {
-        if (string.IsNullOrEmpty(Uid))
+        [ReadOnly] public string Uid;
+
+        #region Registering / Unregistering from SaveManager
+
+        private void Awake()
         {
-            Debug.LogError(gameObject + " this gameObject has no unique ID!");
-            return;
+            if (string.IsNullOrEmpty(Uid))
+            {
+                Debug.LogError(gameObject + " this gameObject has no unique ID!");
+                return;
+            }
+
+            SaveManager.SceneSavables.Add(Uid, this);
         }
 
-        SaveManager.savables.Add(Uid, this);
-    }
-
-    private void OnDisable()
-    {
-        if (SaveManager.savables.ContainsKey(Uid))
+        private void OnDisable()
         {
-            SaveManager.savables.Remove(Uid);
+            if (SaveManager.SceneSavables.ContainsKey(Uid))
+            {
+                SaveManager.SceneSavables.Remove(Uid);
+            }
         }
-    }
 
-    private void OnDestroy()
-    {
-        if (SaveManager.savables.ContainsKey(Uid))
+        private void OnDestroy()
         {
-            SaveManager.savables.Remove(Uid);
-        };
-    }
+            if (SaveManager.SceneSavables.ContainsKey(Uid))
+            {
+                SaveManager.SceneSavables.Remove(Uid);
+            };
+        }
 
-    // Capturing / Restoring states
+        #endregion
 
-    public virtual string Capture()
-    {
-        return null;
-    }
+        #region Capturing / Restoring states
 
-    public virtual void Restore (string json)
-    {
-    }
+        public virtual string Capture()
+        {
+            return null;
+        }
 
-    [ContextMenu("Generate GUID")]
-    public void GenerateGUID()
-    {
-        Uid = Guid.NewGuid().ToString();
-    }
+        public virtual void Restore(string json)
+        {
+        }
 
-    private void Reset()
-    {
-        if(string.IsNullOrEmpty(Uid))
-            GenerateGUID();
+        #endregion
+
+        #region Generating unique ID
+
+        [ContextMenu("Generate GUID")]
+        public void GenerateGUID()
+        {
+            Uid = Guid.NewGuid().ToString();
+        }
+
+        private void Reset()
+        {
+            if (string.IsNullOrEmpty(Uid))
+                GenerateGUID();
+        }
+        
+        #endregion
+
     }
 }
